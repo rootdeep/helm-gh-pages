@@ -91,9 +91,10 @@ main() {
   dependencies
   if [[ "$LINTING" != "off" ]]; then
     lint
+  else 
+    package
+    upload
   fi
-  package
-  upload
 }
 
 locate() {
