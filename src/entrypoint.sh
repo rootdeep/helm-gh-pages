@@ -59,7 +59,7 @@ main() {
   fi
 
   if [[ -z "$TARGET_DIR" ]]; then
-    TARGET_DIR="."
+    TARGET_DIR=${CHARTS_DIR}
   fi
 
   if [[ -z "$CHARTS_URL" ]]; then
@@ -85,14 +85,20 @@ main() {
   if [[ -z "$INDEX_DIR" ]]; then
       INDEX_DIR=${TARGET_DIR}
   fi
-
+  echo "searching charts"
   locate
+  echo "downloading helm v${HELM_VERSION}"
   download
+
+  echo "updateing  denpendencies in charts"
   dependencies
   if [[ "$LINTING" != "off" ]]; then
+    echo "doing lint checks"
     lint
   else 
+    echo "packaging the charts"
     package
+    echo "uploading packages"
     upload
   fi
 }
@@ -114,6 +120,13 @@ download() {
   pushd $tmpDir >& /dev/null
 
   curl -sSL https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz | tar xz
+
+  if [ $? -ne 0 ]; then
+
+    echo "faied to download helm-v${HELM_VERSION}-linux-amd64.tar.gz"
+    exit 1
+  fi
+
   cp linux-amd64/helm /usr/local/bin/helm
 
   popd >& /dev/null
