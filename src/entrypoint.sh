@@ -87,17 +87,21 @@ main() {
   fi
   echo "searching charts"
   locate
+
   echo "downloading helm v${HELM_VERSION}"
   download
 
-  echo "updateing  denpendencies in charts"
-  dependencies
+#  echo "updateing  denpendencies in charts"
+#  dependencies
+
   if [[ "$LINTING" != "off" ]]; then
     echo "doing lint checks"
     lint
   else 
+
     echo "packaging the charts"
     package
+
     echo "uploading packages"
     upload
   fi
